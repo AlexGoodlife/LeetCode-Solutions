@@ -31,7 +31,6 @@ void print_string(char *s, int n){
 
 int lengthOfLongestSubstring(char * s){
     char *check = (char*)malloc(sizeof(char)*strlen(s));
-    //printf("I MADE IT");
     int max = 1;
     int count = 0;
     for(int i = 0; s[i];i++){
@@ -42,7 +41,6 @@ int lengthOfLongestSubstring(char * s){
                 break;
             }
             check[count++] = s[j];
-            //print_string(check, count);
         }
     }
     max = count > max ? count : max;
