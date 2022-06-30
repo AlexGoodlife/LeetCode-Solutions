@@ -17,53 +17,54 @@ typedef struct{
     int i;
 }Node;
 
-int node_rank(Node *a, int n, int x)
+int binary_search(Node **a, int n, int target)
 {
-  int result = 0;
-  while (n > 0)
-  {
-    int m = n / 2;
-    if (x <= a[m].x)
-      n = m;
-    else
+    int low = 0;
+    int high = n - 1;
+    int result = -1;
+    while (low <= high)
     {
-      result += m+1;
-      a += m+1;
-      n -= m+1;
+        int mid = (low + high)/2;
+        if (target == a[mid]->x)
+        {
+            result = mid;
+            high = mid - 1;
+        }
+        else if (target < a[mid]->x) {
+            high = mid - 1;
+        }
+        else {
+            low = mid + 1;
+        }
     }
-  }
-  return result;
-}
-
-int node_bfind(Node *a, int n, int x)
-{
-  int r = node_rank(a, n, x);
-  return r < n && a[r].x == x ? r : -1;
+    return result;
 }
 
 int cmpfunc(const void * a, const void * b){
-   int val1 = ((Node*)a)->x;
-   int val2 = ((Node*)b)->x;
+   int val1 = (*(Node**)a)->x;
+   int val2 = (*(Node**)b)->x;
    return ( val1 - val2 ); 
 }
 
 int* twoSum(int* nums, int numsSize, int target, int* returnSize){
-    Node *a = (Node*)malloc(sizeof(Node) * numsSize);
+    Node **a = (Node**)malloc(sizeof(Node*) * numsSize);
     for(int i = 0; i <numsSize;i++){
-        a[i].x = nums[i];
-        a[i].i = i;
+        a[i] = (Node*)malloc(sizeof(Node));
+        a[i]->x = nums[i];
+        a[i]->i = i;
     }
    qsort(a, (size_t)numsSize, sizeof(Node),cmpfunc);
     *returnSize = 2;
     int *result = (int*)malloc(sizeof(int)* (*returnSize));
     for(int i = 0; i < numsSize;i++){
-        int find = node_bfind(a+(i+1), numsSize-(i+1), (target - a[i].x));
+        int find = binary_search(a+(i+1), numsSize-(i+1), (target - a[i]->x));
         if(find != -1){
-            result[0] = a[i].i;
-            result[1] = (a+i+1)[find].i;
+            result[0] = a[i]->i;
+            result[1] = (a+i+1)[find]->i;
             return result;
         }
     }
+    free(a);
     result[0] = 0;
     result[1] = 0;
     return result;
